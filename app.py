@@ -43,11 +43,17 @@ movies = [
     {'title': 'The Pork of Music', 'year': '2012'},
 ]
 
+#上下文处理
+@app.context_processor
+def inject_user():  # 函数名可以随意修改
+    user = User.query.first()
+    return dict(user=user)  # 需要返回字典，等同于return {'user': user}
+
 @app.route('/')
 def index():
-    user = User.query.first()
+    #user = User.query.first()
     movies = Movie.query.all()
-    return render_template('index.html', user=user, movies=movies)
+    return render_template('index.html',  movies=movies)
 
 
 @app.route('/index')
@@ -71,6 +77,12 @@ def test_url_for():
     print(url_for('test_url_for', num=2))
     return 'Test page'
 
+
+#404自定义页面
+@app.errorhandler(404)
+def page_not_found(e):
+    #user = User.query.first()
+    return render_template('404.html'), 404
 
 #自定义命令
 @app.cli.command()
